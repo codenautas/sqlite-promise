@@ -1,0 +1,62 @@
+{
+  "name": "sqlite-promise",
+  "description": "sqlite with promise A+",
+  "version": "0.0.1",
+  "author": "Codenautas <codenautas@googlegroups.com>",
+  "license": "MIT",
+  "repository": "codenautas/sqlite-promise",
+  "contributors": [{
+    "name": "Emilio Platzer", "email": "emilioplatzer@gmail.com"
+  },{
+    "name": "Diego Florio", "email": "diegoefe@gmail.com"
+  }],
+  "dependencies": {
+    "fs-promise": "^0.3.1",
+    "lodash": "^3.10.1",
+    "promise": "^7.0.4",
+    "sqlite3": "^3.0.10",
+    
+    "best-promise": "~0.2.3"
+  },
+  "devDependencies": {
+    "bluebird": "~2.9.34",
+    "colors": "^1.1.2",
+    "es6-promise": "~3.0.2",
+    "expect.js": "^0.3.1",
+    "istanbul": "~0.3.18",
+    "mocha": "^2.2.5",
+    "native-promise-only": "~0.8.0-a",
+    "q": "~1.4.1",
+    "rsvp": "~3.0.20",
+    "sinon": "~1.16.1",
+    "when": "~3.7.3",
+
+    "sql-promise": "~0.0.1"
+  },
+  "main": "bin/sqlite-promise.js",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "scripts": {
+    "test": "set COVER=all&& mocha --reporter spec --bail --check-leaks test/",
+    "test-ci": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec --check-leaks test/",
+    "test-cov":     "set COVER=all&& istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot --check-leaks test/",
+    "test-cov-odb": "set COVER=odb&& istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot --check-leaks test/",
+    "test-cov-ndb": "set COVER=ndb&& istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot --check-leaks test/",
+    "test-cov-sdb": "set COVER=sdb&& istanbul cover node_modules/mocha/bin/_mocha -- --reporter spec --check-leaks test/",
+    "start": "node examples/use-examples.js"
+  },
+  "jshintConfig": {
+    "asi": false,
+    "curly": true,
+    "forin": true
+  },
+  "codenautas": {
+    "package-version": "0.0.1",
+    "run-in": "server",
+    "test-appveyor": true,
+    "type": "lib",
+    "stage": "designing",
+    "coverage": 60
+  }
+}
