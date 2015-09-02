@@ -13,13 +13,42 @@ var util = require('util');
 sqlitePromise.defaultPort=null;
 
 sqlitePromise.connect = function connect(connOpts){
-    return new fs.exists(connOpts).then(function(exist){
-        if(exist || connOpts==':memory:'){
-            return new sqlite3.Database(connOpts);
-        }else{
-            throw new Error('sqlite3: '+connOpts+' database does not exist');
-        }
+    return Promises.make(function(resolve,reject){
+        var db=new sqlite3.Database(connOpts, sqlite3.OPEN_READWRITE,function(err){
+            if(err){
+                reject(err);
+            }else{
+                resolve(new sqlitePromise.Client(db));
+            }
+        });
     });
+};
+
+sqlitePromise.Client = function Client(_db){
+    var self = this;
+    this.db = _db;
+    this.done = function done(){
+        this.db.close();
+    }
+    this.query = function query(){
+        return new sqlitePromise.Query(arguments, self);
+    }
+}
+
+sqlitePromise.Query = function Query(queryArguments, client){
+    this.execute = function execute(){
+        return Promises.make(function(resolve, reject){
+            var newArguments = Array.prototype.slice.call(queryArguments, 0).concat(function(err){
+                if(err){
+                    reject(err);
+                }else{
+                    resolve({rowCount: this.changes});
+                }
+            });
+            console.log('newArguments', newArguments);
+            client.db.run.apply(client.db, newArguments);
+        });
+    }
 }
 
 module.exports = sqlitePromise;
