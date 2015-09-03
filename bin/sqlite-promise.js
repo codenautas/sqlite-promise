@@ -12,22 +12,11 @@ var util = require('util');
 
 sqlitePromise.defaultPort=null;
 
-sqlitePromise.connect = function connect(connOpts){
-    return Promises.make(function(resolve,reject){
-        var db=new sqlite3.Database(connOpts, sqlite3.OPEN_READWRITE,function(err){
-            if(err){
-                reject(err);
-            }else{
-                resolve(new sqlitePromise.Client(db));
-            }
-        });
-    });
-};
-
 sqlitePromise.Client = function Client(_db){
     var self = this;
     this.db = _db;
     this.done = function done(){
+        console.log('SQLITE3 close');
         this.db.close();
     }
     this.query = function query(){
@@ -36,7 +25,8 @@ sqlitePromise.Client = function Client(_db){
 }
 
 sqlitePromise.Query = function Query(queryArguments, client){
-    this.execute = function execute(){
+    this.execute = function execute(adapterName){
+        var adapter = sqlitePromise.queryAdapters[adapterName||'normal'];
         return Promises.make(function(resolve, reject){
             var newArguments = Array.prototype.slice.call(queryArguments, 0).concat(function(err){
                 if(err){
@@ -49,6 +39,19 @@ sqlitePromise.Query = function Query(queryArguments, client){
             client.db.run.apply(client.db, newArguments);
         });
     }
+    this.fetchAll            = this.execute.bind(this,'normal');
 }
+
+sqlitePromise.connect = function connect(connOpts){
+    return Promises.make(function(resolve,reject){
+        var client=new sqlite3.Database(connOpts, sqlite3.OPEN_READWRITE,function(err){
+            if(err){
+                reject(err);
+            }else{
+                resolve(new sqlitePromise.Client('opened', client, client.close));
+            }
+        });
+    });
+};
 
 module.exports = sqlitePromise;

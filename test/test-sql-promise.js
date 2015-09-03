@@ -1,6 +1,6 @@
 "use strict";
 
-var tester=require('sql-promise').tester;
+var tester=require('sql-promise-tester');
 var fs=require('fs-promise');
 
 var sqlite3 = require('sqlite3');
@@ -23,9 +23,9 @@ function prepareFile(){
     });
 }
 
-tester.test(sqlite, {
+tester(sqlite, {
     connOpts: dbFile, 
     badConnOpts: 'inexis_file.db', 
     prepare:prepareFile,
-    testUntil:'connect'
+    testUntil:'end'
 });
