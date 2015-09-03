@@ -5,6 +5,14 @@
 
 var sqlitePromise = {};
 
+var sqlPromise = require('sql-promise');
+
+sqlitePromise = Object.create(sqlPromise);
+
+sqlitePromise.motorName = 'sqlite3';
+
+sqlitePromise.debug={};
+
 var sqlite3 = require('sqlite3');
 var fs = require('fs-promise');
 var Promises = require('best-promise');
@@ -44,11 +52,11 @@ sqlitePromise.Query = function Query(queryArguments, client){
 
 sqlitePromise.connect = function connect(connOpts){
     return Promises.make(function(resolve,reject){
-        var client=new sqlite3.Database(connOpts, sqlite3.OPEN_READWRITE,function(err){
+        var connection=new sqlite3.Database(connOpts, sqlite3.OPEN_READWRITE,function(err){
             if(err){
                 reject(err);
             }else{
-                resolve(new sqlitePromise.Client('opened', client, client.close));
+                resolve(new sqlitePromise.Connection('opened', connection, connection.close, sqlitePromise));
             }
         });
     });
