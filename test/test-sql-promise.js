@@ -27,5 +27,5 @@ tester(sqlite, {
     connOpts: dbFile, 
     badConnOpts: 'inexis_file.db', 
     prepare:prepareFile,
-    testUntil:'connect'
+    testUntil:'end'
 });
