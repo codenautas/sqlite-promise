@@ -10,46 +10,50 @@ var sqlPromise = require('sql-promise');
 var sqlite3 = require('sqlite3').verbose();
 
 function SqliteConnection(params) {
-    sqlPromise.DbPreparedQuery.call(this);
-    this.internalState.db = new sqlite3.Database(params, sqlite3.OPEN_READWRITE, function(err) {
-        if(err) { this.internalState.error = err; }
+    this.db = new sqlite3.Database(params, sqlite3.OPEN_CREATE | sqlite3.OPEN_READWRITE, function(err) {
+        console.log("*****", err);
+        if(err) { this.error = err; }
     });
     this.close = function() {
-        this.internalState.db.close();
+        this.db.close();
     }
 };
 
 function SqlitePreparedQuery(conn, sql) {
-    sqlPromise.DbConnection.call(this);
-    this.internalState.conn = conn.internalState;
-    this.internalState.stmt = conn.internalState.db.prepare(sql, function(err) {
-        if(err) { this.internalState.error = err; }
+    this.conn = conn;
+    this.stmt = conn.db.prepare(sql, function(err) {
+        if(err) { this.error = err; }
     });
     
-    this.internalState.sql = sql;
+    this.sql = sql;
+};
+
+function SqliteResult(rows) {
+    this.rows = rows;
+    this.rowCount = rows.length;
 };
 
 function SqliteQuery(preparedQuery, data) {
-    sqlPromise.DbQuery.call(this);
-    this.internalState = preparedQuery.internalState;
-    this.internalState.data = data;
-    this.fetch = function fetch(callbackRowByRow) {
-        var f=this.internalState.stmt.run(function(err, row) {
+    this.conn = preparedQuery.conn;
+    this.stmt = preparedQuery.stmt;
+    this.data = data;
+    this.fetch = function fetch() {
+        try {
+        var f=this.stmt.run(this.data, function(err, row) {
+            console.log("run", err, row);
             if(err) {
-                //this.internalState.error = err;
+                console.log("fetch err", err);
                 throw Error(err)
             } else {
-                console.log("fetched ok", row);
-                callbackRowByRow(row);
+                return new SqliteResult(row);
             }
         });
+            
+        }catch(e) {
+            console.log("fetch mal", e);
+        }
+        console.log("f", f);
     };
-};
-
-
-function SqliteResult(row) {
-    sqlPromise.DbResult.call(this);
-    this.internalState = row;
 };
 
 sqlitePromise.Motor = function SQLiteMotor() {
@@ -59,8 +63,8 @@ sqlitePromise.Motor = function SQLiteMotor() {
         }
         return Promises.make(function(resolve, reject){
             var con = new SqliteConnection(params);
-            if(con.internalState.error) {
-                reject(con.internalState.error);
+            if(con.error) {
+                reject(con.error);
             } else{
                 resolve(con);
             }
@@ -69,8 +73,8 @@ sqlitePromise.Motor = function SQLiteMotor() {
     this.prepare=function(con, sql) {
         return Promises.make(function(resolve, reject){
             var prepQ = new SqlitePreparedQuery(con, sql);
-            if(prepQ.internalState.error) {
-                reject(prepQ.internalState.error);
+            if(prepQ.error) {
+                reject(prepQ.error);
             } else{
                 resolve(prepQ);
             }
@@ -79,32 +83,21 @@ sqlitePromise.Motor = function SQLiteMotor() {
     this.query=function(preparedQuery, data) {
         return Promises.make(function(resolve, reject){
             var query = new SqliteQuery(preparedQuery, data);
-            if(query.internalState.error) {
-                reject(query.internalState.error);
+            if(query.error) {
+                reject(query.error);
             } else{
                 resolve(query);
             }
         });
     };
-    this.fetchRowByRow=function(query, callbackRowByRow) {
+    this.fetchAll=function(query) {
         return Promises.make(function(resolve, reject){
             try {
-                console.log("FRBR");
-                query.fetch(callbackRowByRow);
-                console.log("FUE");
+                var res = query.fetch();
+                console.log("res", res);
+                resolve(res);
             } catch(err) {
-                console.log("FRBR", err);
                 reject(err);
-            }
-        });
-    };
-    this.exec=function(con, sql) {
-        return Promises.make(function(resolve, reject){
-            var e = con.internalState.db.run(sql);
-            if(e) {
-                reject(e);
-            } else{
-                resolve("ok");
             }
         });
     };

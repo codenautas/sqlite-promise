@@ -19,16 +19,12 @@ motor.connect("local-database.db").then(function(con) {
     return motor.prepare(con, "CREATE table t1(id integer, name varchar);");
 }).then(function(prepared) {
     console.log("prepared", prepared);
-    return motor.query(prepared, "dummy");
+    return motor.query(prepared, "");
 }).then(function(query) {
     console.log("query", query);
-    return motor.fetchRowByRow(query, function(row) {
-       console.log("row", row); 
-    }).then(function(algo) {
-        console.log("algo", algo);
-    }).then(function(){
-        motor.close();
-    });
+    return motor.fetchAll(query);
+}).then(function(result) {
+    console.log("result", result); 
 }).catch(function(err) {
     console.log("err", err.stack);
 });
