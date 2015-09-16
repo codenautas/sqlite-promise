@@ -11,6 +11,8 @@ var sqlite3 = require('sqlite3').verbose();
 sqlitePromise.Motor = function SqliteMotor(){
 }
 
+sqlitePromise.Motor.defaultPort = 0;
+
 sqlitePromise.sqlite3 = sqlite3;
 
 function applyToConstructor(constructor, argArray) {
