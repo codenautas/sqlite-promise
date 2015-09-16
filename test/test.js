@@ -22,10 +22,10 @@ function prepareFile(){
             throw err;
         }
     }).then(function(){
-        console.log('creando ',dbFile);
+        //console.log('creando ',dbFile);
         var sqlite3 = require('..').sqlite3;
         var db = new sqlite3.Database(dbFile, sqlite3.OPEN_CREATE |sqlite3.OPEN_READWRITE); // uso un archivo real para poder mirarlo
-        console.log(db);
+        //console.log(db);
         db.serialize(function() {
             db.run("CREATE TABLE lorem (info TEXT)");
             var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
@@ -35,7 +35,6 @@ function prepareFile(){
             stmt.finalize();
         });
         db.close();
-        console.log("prepareFile() done");
         return null; //ok
     }).catch(function(err) {
         console.log("ERROR", err.stack);
@@ -44,8 +43,6 @@ function prepareFile(){
 }
 
 prepareFile().then(function() {
-    console.log("listo");
-}).then(function() {
     return motor.connect(defaultConnOpts);
 }).then(function(con) {
     return motor.prepare(con, "SELECT * FROM sqlite_master WHERE type='table'");
