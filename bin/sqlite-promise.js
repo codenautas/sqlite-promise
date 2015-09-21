@@ -5,7 +5,7 @@
 
 var sqlitePromise = {};
 
-var Promises = require('best-promise');
+var Promises = require('promise-plus');
 var sqlite3 = require('sqlite3').verbose();
 
 sqlitePromise.Motor = function SqliteMotor(){
@@ -71,14 +71,19 @@ sqlitePromise.Motor.query = function query(internal, data){
 
 sqlitePromise.Motor.fetchAll = function fetchAll(internal){
     return Promises.make(function(resolve, reject){
-        internal.stmt.all(function(err, result){
+        internal.stmt.all(function(err, rows){
             if(err){
                 reject(err);
             }else{
-                resolve(result);
+                console.log('rows////', rows);
+                resolve({rowCount:rows.length||1, rows:rows});
             }
         });
     });
+};
+
+sqlitePromise.Motor.placeHolder = function placeHolder(n){
+    return '$'+n;
 };
 
 module.exports = sqlitePromise;

@@ -16,7 +16,7 @@
     "promise": "7.0.4",
     "sqlite3": "3.0.10",
     
-    "best-promise": "0.2.3"
+    "promise-plus": "0.0.6"
   },
   "devDependencies": {
     "bluebird": "2.9.34",
@@ -31,8 +31,8 @@
     "sinon": "1.16.1",
     "when": "3.7.3",
     
-    "sql-promise": "0.0.11",
-    "sql-promise-tester": "0.0.4"
+    "sql-promise": "0.0.15",
+    "sql-promise-tester": "0.0.15"
   },
   "main": "bin/sqlite-promise.js",
   "engines": {
