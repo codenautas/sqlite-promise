@@ -92,5 +92,5 @@ tester(MotorSqlite, {
     connOpts: defaultConnOpts, 
     badConnOpts: 'inexis_file.db', 
     prepare:prepareFile,
-    testUntil:'end'
+    testUntil:'select'
 });

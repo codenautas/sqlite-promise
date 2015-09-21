@@ -46,6 +46,7 @@ sqlitePromise.Motor.prepare = function prepare(internal, sqlSentence){
     return Promises.make(function(resolve, reject) {
         var stmt = internal.prepare(sqlSentence, function(err) {
             if(err) {
+                console.log("prepare error", err);
                 reject(err);
             } else {
                 resolve({
@@ -71,8 +72,9 @@ sqlitePromise.Motor.query = function query(internal, data){
 
 sqlitePromise.Motor.fetchAll = function fetchAll(internal){
     return Promises.make(function(resolve, reject){
-        internal.stmt.all(function(err, rows){
+        internal.stmt.all(internal.data || [], function(err, rows){
             if(err){
+                console.log("fetchAll error", err);
                 reject(err);
             }else{
                 console.log('rows////', rows);
