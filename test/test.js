@@ -9,84 +9,18 @@ var MotorSqlite = require('..').Motor;
 var defaultConnOpts={
     motor:'test',
     file:'test.db3',
-    //file:':memory:',
-    //create: true,
+    create: true,
     readWrite: true
 };
 
 function prepareFile(){
     var dbFile = defaultConnOpts.file;
     return fs.unlink(dbFile).catch(function(err){
-        if(err.code!=='ENOENT'){
-            throw err;
-        }
+        if(err.code!=='ENOENT'){ throw err; }
     }).then(function(){
-        console.log('creando ',dbFile);
-        var sqlite3 = require('..').sqlite3;
-        var db = new sqlite3.Database(dbFile, sqlite3.OPEN_CREATE |sqlite3.OPEN_READWRITE); // uso un archivo real para poder mirarlo
+        MotorSqlite.connect(defaultConnOpts);
     });
 }
-
-function prepareFileMax(){
-    var dbFile = defaultConnOpts.file;
-    return fs.unlink(dbFile).catch(function(err){
-        if(err.code!=='ENOENT'){
-            throw err;
-        }
-    }).then(function(){
-        console.log('creando ',dbFile);
-        var sqlite3 = require('..').sqlite3;
-        var db = new sqlite3.Database(dbFile, sqlite3.OPEN_CREATE |sqlite3.OPEN_READWRITE); // uso un archivo real para poder mirarlo
-        console.log(db);
-        db.serialize(function() {
-            db.run("CREATE TABLE lorem (info TEXT)");
-            console.log('creando');
-            var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
-            for (var i = 0; i < 10; i++) {
-                console.log('valores',i);
-                stmt.run("Ipsum " + i);
-            }
-            db.each("SELECT rowid AS id, info FROM lorem", function(err, row) {
-                console.log(row.id + ": " + row.info);
-            });
-            stmt.finalize();
-        });
-        console.log('cerrando');
-        db.close();
-        return null; //ok
-    }).catch(function(err) {
-        console.log("ERROR", err.stack);
-        throw err;
-    });
-}
-
-// descomentar esto para ejecutar "npm run test-direct" !!
-/*
-prepareFile().then(function() {
-    return MotorSqlite.connect(defaultConnOpts);
-}).then(function(con) {
-    // return MotorSqlite.prepare(con, "SELECT * FROM sqlite_master WHERE type='table'");
-    return MotorSqlite.prepare(con, "SELECT info FROM lorem WHERE 1");
-}).then(function(prepared) {
-    // console.log("prepared", prepared);
-    return MotorSqlite.query(prepared, "");
-}).then(function(query) {
-    // console.log("query", query);
-    return MotorSqlite.fetchAll(query);
-}).then(function(result) {
-    console.log("result", result); 
-}).catch(function(err) {
-    console.log("err", err.stack);
-});    
-// */
-
-/*
-it("prepare",function(done){
-    prepareFile().then(function(){
-        console.log('preparo');
-    }).then(done,done);
-});
-// */
 
 tester(MotorSqlite, {
     connOpts: defaultConnOpts, 

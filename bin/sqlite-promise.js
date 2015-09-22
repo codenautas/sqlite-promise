@@ -15,12 +15,6 @@ sqlitePromise.Motor.defaultPort = 0;
 
 sqlitePromise.sqlite3 = sqlite3;
 
-function applyToConstructor(constructor, argArray) {
-    var args = [null].concat(argArray);
-    var factoryFunction = constructor.bind.apply(constructor, args);
-    return new factoryFunction();
-}
-
 sqlitePromise.Motor.connect = function connect(connectParameters){
     return Promises.make(function(resolve, reject){
         var mode = 0;
