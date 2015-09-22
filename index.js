@@ -1,1 +1,1 @@
-module.exports = require('./bin/sqlite-promise.js');
+module.exports = require('./lib/sqlite-promise.js');
