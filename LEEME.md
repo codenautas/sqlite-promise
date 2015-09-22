@@ -35,7 +35,7 @@ también disponible en:
 [!--lang:*-->
 
 ```sh
-$ npm install sql-promise
+$ npm install sqlite-promise
 ```
 
 <!--lang:*-->
