@@ -68,14 +68,35 @@ sqlitePromise.Motor.fetchAll = function fetchAll(internal){
     return Promises.make(function(resolve, reject){
         internal.stmt.all(internal.data || [], function(err, rows){
             if(err){
-                console.log("fetchAll error", err);
                 reject(err);
             }else{
-                console.log('rows////', rows);
                 resolve({rowCount:rows.length||1, rows:rows});
             }
         });
     });
+};
+
+sqlitePromise.Motor.fetchRowByRow = function fetchAll(internal, functions){
+    return Promises.make(function(resolve, reject){
+        internal.stmt.each(internal.data || [],
+            function(err, row) {
+                if(err){
+                    reject(err);
+                }else{
+                    functions.onRow(row);
+                }
+            },
+            function(err, numRows) {
+                if(err) { reject(err); }
+                functions.onEnd();
+                resolve({rowCount:numRows});
+            }
+        );
+    });
+    var client = internal.client.query(internal.sql, internal.data);
+    client.on('row', functions.onRow);
+    client.on('end', functions.onEnd);
+    client.on('error', functions.onError);
 };
 
 sqlitePromise.Motor.placeHolder = function placeHolder(n){
