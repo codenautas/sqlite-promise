@@ -19,16 +19,16 @@
     "promise-plus": "0.0.6"
   },
   "devDependencies": {
-    "bluebird": "2.9.34",
+    "bluebird": "2.10.1",
     "colors": "1.1.2",
     "es6-promise": "3.0.2",
     "expect.js": "0.3.1",
-    "istanbul": "0.3.19",
-    "mocha": "2.3.0",
+    "istanbul": "0.3.21",
+    "mocha": "2.3.3",
     "native-promise-only": "0.8.1",
     "q": "1.4.1",
     "rsvp": "3.1.0",
-    "sinon": "1.16.1",
+    "sinon": "1.17.1",
     "when": "3.7.3",
     
     "sql-promise": "0.0.15",
