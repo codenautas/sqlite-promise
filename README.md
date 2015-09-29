@@ -32,4 +32,3 @@ $ npm install sqlite-promise
 ----------------
 
 
-
