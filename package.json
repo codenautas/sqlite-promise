@@ -31,7 +31,7 @@
     "sinon": "1.17.1",
     "when": "3.7.3",
     
-    "sql-promise": "0.0.17",
+    "sql-promise": "0.0.18",
     "sql-promise-tester": "0.0.17"
   },
   "main": "lib/sqlite-promise.js",
