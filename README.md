@@ -3,7 +3,7 @@
 sqlite with promise A+
 
 
-![designing](https://img.shields.io/badge/stability-desgining-red.svg)
+![designing](https://img.shields.io/badge/stability-designing-red.svg)
 [![npm-version](https://img.shields.io/npm/v/sqlite-promise.svg)](https://npmjs.org/package/sqlite-promise)
 [![downloads](https://img.shields.io/npm/dm/sqlite-promise.svg)](https://npmjs.org/package/sqlite-promise)
 [![build](https://img.shields.io/travis/codenautas/sqlite-promise/master.svg)](https://travis-ci.org/codenautas/sqlite-promise)
